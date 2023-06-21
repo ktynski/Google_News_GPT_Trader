@@ -269,6 +269,11 @@ def reformat_json(json_string):
     print("Reformatted Json")
     return result
 
+def convert_to_python_int(obj):
+    if isinstance(obj, np.int64):
+        return int(obj)
+    raise TypeError
+
 def evaluate_cluster(cluster_articles, cluster, stock):
     summaries = cluster_articles.apply(lambda x: summarize_article(x, stock)).tolist()
     cluster_evaluation = evaluate_cluster_summaries(summaries)
@@ -287,9 +292,10 @@ def evaluate_cluster(cluster_articles, cluster, stock):
             evaluations = [{}]
 
     # Convert numpy.int64 values to regular integers
-    evaluations = json.loads(json.dumps(evaluations, default=int))
+    evaluations = json.loads(json.dumps(evaluations, default=convert_to_python_int))
 
     return cluster, summaries, evaluations
+
 
 
 
