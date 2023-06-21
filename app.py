@@ -22,8 +22,7 @@ import base64
 openai.api_key = st.secrets["openai_api_key"]  # Set this up in Streamlit secrets
 GOOGLE_API_KEY = st.secrets["SERPAPI_API_KEY"]
 
-# Set up API keys
-openai.api_key = OPENAI_API_KEY
+
 params = {
     "api_key": GOOGLE_API_KEY,
     "engine": "google",
