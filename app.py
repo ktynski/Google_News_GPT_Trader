@@ -207,11 +207,11 @@ def evaluate_cluster_summaries(cluster_summaries):
         messages=[
             {"role": "system", "content": '''You are an AI assistant that evaluates the bullish/bearish signals in a cluster of article summaries. Please analyze the following summaries and provide your evaluation in exactly the format:
 
-              Example 1: [{{"Stock": "Apple", "Signal Type": "Bullish", "Explanation": "The company has shown great revenue growth.", "Confidence": 80}}]\n\n
+              Example 1: [{"Stock": "Apple", "Signal Type": "Bullish", "Explanation": "The company has shown great revenue growth.", "Confidence": 80}]\n\n
 
-              Example 2: [{{"Stock": "Microsoft", "Signal Type": "Bearish", "Explanation": "The company's profit margins have been decreasing.", "Confidence": 60}}]\n\n
+              Example 2: [{"Stock": "Microsoft", "Signal Type": "Bearish", "Explanation": "The company's profit margins have been decreasing.", "Confidence": 60}]\n\n
 
-              Example 3: [{{"Stock": "Google", "Signal Type": "Bullish", "Explanation": "New product launch expected.", "Confidence": 40}}]\n\n
+              Example 3: [{"Stock": "Google", "Signal Type": "Bullish", "Explanation": "New product launch expected.", "Confidence": 40}]\n\n
 
               Please reform the following string and return only what the json formatted as described in the example without any intro or outro text:'''},
 
