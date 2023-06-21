@@ -285,6 +285,10 @@ def evaluate_cluster(cluster_articles, cluster, stock):
         except json.JSONDecodeError as e:
             print(f"Could not parse reformatted string to dictionary: {e}")
             evaluations = [{}]
+
+    # Convert numpy.int64 values to regular integers
+    evaluations = json.loads(json.dumps(evaluations, default=int))
+
     return cluster, summaries, evaluations
 
 
