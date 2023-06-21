@@ -177,7 +177,7 @@ def summarize_article(article_text, stock):
             You are a world renowned expert at finding bullish and bearish signals from news articles and news stories. These signals could be anything.
              You will be given an article to summarize. You MUST summarize it with your skill as a stock analyst in mind, making sure you include all relevant information for
              a later algo that will parse the summary. You are an AI assistant that summarizes articles. Please provide a summary of the following article and returning your summary only on points related to {stock}:\n"""},
-            {"role": "user", "content": article_text + "Summary: \n\n}
+            {"role": "user", "content": article_text + "Summary: \n\n"}
         ],
         max_tokens=200,
         n=1,
