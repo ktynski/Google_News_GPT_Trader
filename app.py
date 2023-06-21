@@ -11,7 +11,6 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import openai
-import ast
 from transformers import BertTokenizerFast
 import concurrent.futures
 import ast
