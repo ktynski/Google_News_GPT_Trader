@@ -20,14 +20,16 @@ import json
 import time
 import base64
 
-openai.api_key = "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"
+# Set OpenAI key
+openai.api_key = st.secrets["openai_api_key"]  # Set this up in Streamlit secrets
+serpapikey = st.secrets["SERPAPI_API_KEY"]
 
 tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
 
 
-def get_search_results(query, num_pages):
+def get_search_results(query, num_pages , serpapikey = st.secrets["SERPAPI_API_KEY"]):
     params = {
-        "api_key": "ecc7d445fb803a51d6a2c16f027f0cef45e01457ad348257072521424d0d217d",
+        "api_key": serpapi.api_key,
         "engine": "google",
         "google_domain": "google.com",
         "q": query,
