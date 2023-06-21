@@ -269,12 +269,14 @@ def reformat_json(json_string):
     print("Reformatted Json")
     return result
 
-
 def evaluate_cluster(cluster_articles, cluster, stock):
     summaries = cluster_articles.apply(lambda x: summarize_article(x, stock)).tolist()
     cluster_evaluation = evaluate_cluster_summaries(summaries)
     try:
-        evaluations = json.loads(cluster_evaluation)
+        if cluster_evaluation is not None:
+            evaluations = json.loads(cluster_evaluation)
+        else:
+            evaluations = [{}]
     except json.JSONDecodeError as e:
         print(f"Could not parse string to dictionary: {e}")
         print("Attempting to reformat JSON string using GPT-3...")
@@ -285,6 +287,7 @@ def evaluate_cluster(cluster_articles, cluster, stock):
             print(f"Could not parse reformatted string to dictionary: {e}")
             evaluations = [{}]
     return cluster, summaries, evaluations
+
 
 
 def truncate_text2(text, max_tokens=6000):
