@@ -273,11 +273,11 @@ def evaluate_cluster(cluster_articles, cluster, stock):
     summaries = cluster_articles.apply(lambda x: summarize_article(x, stock)).tolist()
     cluster_evaluation = evaluate_cluster_summaries(summaries)
     if cluster_evaluation is None:
-        cluster_evaluation = '[]'
+        cluster_evaluation = []
     try:
-        evaluations = json.loads(cluster_evaluation)
-    except json.JSONDecodeError as e:
-        print(f"Could not parse string to dictionary: {e}")
+        evaluations = cluster_evaluation
+    except Exception as e:
+        print(f"Could not assign cluster_evaluation to evaluations: {e}")
         print("Attempting to reformat JSON string using GPT-3...")
         cluster_evaluation = reformat_json(cluster_evaluation)
         try:
