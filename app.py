@@ -191,6 +191,8 @@ def summarize_article(article_text, stock):
     return summary
 
 
+import json
+
 def evaluate_cluster_summaries(cluster_summaries):
     cluster_summaries = [summary for summary in cluster_summaries if summary is not None]
     if not cluster_summaries:
@@ -201,7 +203,7 @@ def evaluate_cluster_summaries(cluster_summaries):
     truncated_cluster_summaries = truncate_text(cluster_summaries_str)
     response = call_with_retry(
         openai.ChatCompletion.create,
-        model="gpt-3.5-turbo-16k",
+        model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": '''You are an AI assistant that evaluates the bullish/bearish signals in a cluster of article summaries. Please analyze the following summaries and provide your evaluation in exactly the format:
 
@@ -213,7 +215,7 @@ def evaluate_cluster_summaries(cluster_summaries):
 
               Please reform the following string and return only what the json formatted as described in the example without any intro or outro text:'''},
 
-            {"role": "user", "content": f"""{truncated_cluster_summaries} \n\n Valid Json: \n"""}
+              {"role": "user", "content": f"""{truncated_cluster_summaries} \n\n Valid Json: \n"""}
         ],
         max_tokens=500,
         n=1,
@@ -226,7 +228,14 @@ def evaluate_cluster_summaries(cluster_summaries):
 
     evaluation = response['choices'][0]['message']['content'].strip()
     print(evaluation)
-    return evaluation
+
+    try:
+        parsed_evaluation = json.loads(evaluation)
+        return parsed_evaluation
+    except json.JSONDecodeError:
+        print("Failed to parse evaluation as JSON.")
+        return None
+
 
 
 def reformat_json(json_string):
@@ -265,14 +274,14 @@ def evaluate_cluster(cluster_articles, cluster, stock):
     summaries = cluster_articles.apply(lambda x: summarize_article(x, stock)).tolist()
     cluster_evaluation = evaluate_cluster_summaries(summaries)
     try:
-        evaluations = ast.literal_eval(cluster_evaluation)
-    except Exception as e:
+        evaluations = json.loads(cluster_evaluation)
+    except json.JSONDecodeError as e:
         print(f"Could not parse string to dictionary: {e}")
         print("Attempting to reformat JSON string using GPT-3...")
         cluster_evaluation = reformat_json(cluster_evaluation)
         try:
-            evaluations = ast.literal_eval(cluster_evaluation)
-        except Exception as e:
+            evaluations = json.loads(cluster_evaluation)
+        except json.JSONDecodeError as e:
             print(f"Could not parse reformatted string to dictionary: {e}")
             evaluations = [{}]
     return cluster, summaries, evaluations
