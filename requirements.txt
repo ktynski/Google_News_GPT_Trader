@@ -1,4 +1,4 @@
-GoogleSearch
+google-search-results
 newspaper3k
 transformers
 sentence_transformers
