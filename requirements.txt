@@ -1,0 +1,7 @@
+GoogleSearch
+newspaper3k
+transformers
+sentence_transformers
+sklearn
+numpy
+ast
