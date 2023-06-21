@@ -2,6 +2,6 @@ google-search-results
 newspaper3k
 transformers
 sentence_transformers
-sklearn
+scikit-learn
 numpy
 
