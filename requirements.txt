@@ -3,5 +3,6 @@ newspaper3k
 transformers
 sentence_transformers
 scikit-learn
+openai
 
 
