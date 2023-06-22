@@ -483,9 +483,7 @@ def main():
 
 
          # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Article Text'
-        df_clustered['Summaries'] = df_clustered['full_text'].apply(lambda x: summarize_article(x, stock,link))
-        
-        cluster_evaluations = {}
+        df_clustered['Summaries'] = df_clustered.apply(lambda row: summarize_article(row['full_text'], stock, row['link']), axis=1)
 
         for future in concurrent.futures.as_completed(futures):
             cluster, summaries, evaluations = future.result()
