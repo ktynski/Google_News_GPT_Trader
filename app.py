@@ -499,10 +499,10 @@ def main():
         # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Article Text'
         df_clustered['Summaries'] = df_clustered['full_text'].apply(lambda x: summarize_article(x, stock))
 
-        df_clustered.to_csv(csv_file, index=False, encoding='utf-8-sig', quotechar='"', quoting=1)
+        #df_clustered.to_csv(csv_file, index=False, encoding='utf-8-sig', quotechar='"', quoting=1)
 
         # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Summaries'
-        df_clustered = pd.read_csv(csv_file)
+        #df_clustered = pd.read_csv(csv_file)
 
         bullish_signals, bearish_signals = aggregate_signals(df_clustered, stock)
 
@@ -514,8 +514,8 @@ def main():
         st.subheader("Clustered Articles")
         st.write(df_clustered)
 
-        st.subheader("Cluster Evaluations")
-        st.write(cluster_evaluations)
+        #st.subheader("Cluster Evaluations")
+        #st.write(cluster_evaluations)
 
         st.subheader("Bullish Signals")
         st.write(bullish_signals)
