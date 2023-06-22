@@ -287,12 +287,17 @@ def evaluate_cluster(cluster_articles, cluster, stock):
     except Exception as e:
         print(f"Could not assign cluster_evaluation to evaluations: {e}")
         print("Attempting to reformat JSON string using GPT-3...")
-        cluster_evaluation = reformat_json(cluster_evaluation)
         try:
             evaluations = json.loads(cluster_evaluation)
         except json.JSONDecodeError as e:
-            print(f"Could not parse reformatted string to dictionary: {e}")
-            evaluations = [{}]
+            print(f"Could not parse JSON string: {e}")
+            print("Attempting to reformat JSON string using GPT-3...")
+            cluster_evaluation = reformat_json(cluster_evaluation)
+            try:
+                evaluations = json.loads(cluster_evaluation)
+            except json.JSONDecodeError as e:
+                print(f"Could not parse reformatted string to dictionary: {e}")
+                evaluations = [{}]
 
     # Convert numpy.int64 values to regular integers
     def convert_to_python_int(obj):
@@ -300,10 +305,10 @@ def evaluate_cluster(cluster_articles, cluster, stock):
             return obj.item()
         raise TypeError
 
-    evaluations = json.loads(json.dumps(evaluations, default=convert_to_python_int, ensure_ascii=False))
-
+    evaluations = json.loads(json.dumps(evaluations, default=convert_to_python_int))
 
     return cluster, summaries, evaluations
+
 
 
 
