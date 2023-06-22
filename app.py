@@ -481,6 +481,10 @@ def main():
             # Submit tasks to the executor for each cluster
             futures = {executor.submit(evaluate_cluster, df_clustered[df_clustered['Cluster'] == cluster]['full_text'], cluster, stock): cluster for cluster in clusters}
 
+
+         # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Article Text'
+        df_clustered['Summaries'] = df_clustered['full_text'].apply(lambda x: summarize_article(x, stock,link))
+        
         cluster_evaluations = {}
 
         for future in concurrent.futures.as_completed(futures):
@@ -494,8 +498,7 @@ def main():
 
             cluster_evaluations[cluster] = evaluations
 
-        # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Article Text'
-        df_clustered['Summaries'] = df_clustered['full_text'].apply(lambda x: summarize_article(x, stock,link))
+       
 
 
         #df_clustered.to_csv(csv_file, index=False, encoding='utf-8-sig', quotechar='"', quoting=1)
