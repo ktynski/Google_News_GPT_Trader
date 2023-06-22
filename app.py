@@ -176,13 +176,14 @@ def summarize_article(article_text, stock):
             {"role": "system", "content": f"""You are an all-knowing stock analyst with a deep background in qualitative analysis and quantitative analysis.
             You are a world renowned expert at finding bullish and bearish signals from news articles and news stories. These signals could be anything.
              You will be given an article to summarize. You MUST summarize it with your skill as a stock analyst in mind, making sure you include all relevant information for
-             a later algo that will parse the summary. You are an AI assistant that summarizes articles. Please provide a summary of the following article and returning your summary only on points related to {stock}:\n"""},
+             a later algo that will parse the summary. Please always include links referencing specific articles where appropriate in your response.
+             You are an AI assistant that summarizes articles. Please provide a summary of the following article and returning your summary only on points related to {stock}:\n"""},
             {"role": "user", "content": article_text + "Summary: \n\n"}
         ],
-        max_tokens=200,
+        max_tokens=500,
         n=1,
         stop=None,
-        temperature=0.5
+        temperature=0.3
     )
 
     if response is None:
@@ -213,7 +214,7 @@ def evaluate_cluster_summaries(cluster_summaries):
 
               Example 3: [{"Stock": "Google", "Signal Type": "Bullish", "Explanation": "New product launch expected.", "Confidence": 40}]\n\n
 
-              Please reform the following string and return only what the json formatted as described in the example without any intro or outro text:'''},
+              Please reform the following string and return only what the json formatted as described in the example without any intro or outro text. Please always include links to specific articles where appropriate in your response.'''},
 
               {"role": "user", "content": f"""{truncated_cluster_summaries} \n\n Valid Json: \n"""}
         ],
@@ -253,7 +254,7 @@ def reformat_json(json_string):
               Example 1: [{"Stock": "Apple", "Signal Type": "Bullish", "Explanation": "The company has shown great revenue growth.", "Confidence": 80}]\n\n
               Example 2: [{"Stock": "Microsoft", "Signal Type": "Bearish", "Explanation": "The company's profit margins have been decreasing.", "Confidence": 60}]\n\n
               Example 3: [{"Stock": "Google", "Signal Type": "Bullish", "Explanation": "New product launch expected.", "Confidence": 40}]\n\n
-              Please reform the following string and return only what the json formatted as described in the example without any intro or outro text:'''
+              Please reform the following string and return only what the json formatted as described in the example without any intro or outro text. Please always include links to specific articles where appropriate in your response.'''
             },
 
             {"role": "user", "content": f"{json_string} \n\n Valid Json: \n"}
