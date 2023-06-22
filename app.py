@@ -203,7 +203,7 @@ def evaluate_cluster_summaries(cluster_summaries):
     truncated_cluster_summaries = truncate_text(cluster_summaries_str)
     response = call_with_retry(
         openai.ChatCompletion.create,
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo-16k",
         messages=[
             {"role": "system", "content": '''You are an AI assistant that evaluates the bullish/bearish signals in a cluster of article summaries. Please analyze the following summaries and provide your evaluation in exactly the format:
 
@@ -274,21 +274,36 @@ def convert_to_python_int(obj):
         return int(obj)
     raise TypeError
 
+import json
+import numpy as np
+
 def evaluate_cluster(cluster_articles, cluster, stock):
     summaries = cluster_articles.apply(lambda x: summarize_article(x, stock)).tolist()
     cluster_evaluation = evaluate_cluster_summaries(summaries)
+    if cluster_evaluation is None:
+        cluster_evaluation = []
     try:
-        evaluations = ast.literal_eval(cluster_evaluation)
+        evaluations = cluster_evaluation
     except Exception as e:
-        print(f"Could not parse string to dictionary: {e}")
+        print(f"Could not assign cluster_evaluation to evaluations: {e}")
         print("Attempting to reformat JSON string using GPT-3...")
         cluster_evaluation = reformat_json(cluster_evaluation)
         try:
-            evaluations = ast.literal_eval(cluster_evaluation)
-        except Exception as e:
+            evaluations = json.loads(cluster_evaluation)
+        except json.JSONDecodeError as e:
             print(f"Could not parse reformatted string to dictionary: {e}")
             evaluations = [{}]
+
+    # Convert numpy.int64 values to regular integers
+    def convert_to_python_int(obj):
+        if isinstance(obj, np.int64):
+            return obj.item()
+        raise TypeError
+
+    evaluations = json.loads(json.dumps(evaluations, default=convert_to_python_int))
+
     return cluster, summaries, evaluations
+
 
 
 
@@ -352,7 +367,7 @@ def generate_reports(bullish_signals, bearish_signals, stock_name):
     bearish_signals = truncate_text(bearish_signals)
     bullish_response = call_with_retry(
         openai.ChatCompletion.create,
-        model="gpt-4",
+        model="gpt-3.5-turbo-16k",
         messages=[
             {"role": "system", "content": f"""You are an AI assistant that generates a detailed bullish report for a given stock.
             The report should be in markdown format and include an analysis of the bullish signals, potential opportunities, and risks.
@@ -372,7 +387,7 @@ def generate_reports(bullish_signals, bearish_signals, stock_name):
     # Generate Bearish Report
     bearish_response = call_with_retry(
         openai.ChatCompletion.create,
-        model="gpt-4",
+        model="gpt-3.5-turbo-16k",
         messages=[
             {"role": "system", "content": f"""You are an AI assistant that generates a detailed bearish report for a given stock.
             The report should be in markdown format and include an analysis of the bearish signals, potential threats, and opportunities.
