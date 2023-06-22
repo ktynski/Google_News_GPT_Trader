@@ -166,7 +166,7 @@ def truncate_text(text, max_tokens=2500):
     return tokenizer.convert_tokens_to_string(tokens)
 
 
-def summarize_article(article_text, stock):
+def summarize_article(article_text, stock,link):
     article_text = str(article_text)
     article_text = truncate_text(article_text)
     response = call_with_retry(
@@ -178,7 +178,7 @@ def summarize_article(article_text, stock):
              You will be given an article to summarize. You MUST summarize it with your skill as a stock analyst in mind, making sure you include all relevant information for
              a later algo that will parse the summary. Please always include links referencing specific articles where appropriate in your response.
              You are an AI assistant that summarizes articles. Please provide a summary of the following article and returning your summary only on points related to {stock}:\n"""},
-            {"role": "user", "content": article_text + "Summary: \n\n"}
+            {"role": "user", "content": "Article Text: " + article_text + " Link:" + link + " Summary: \n\n"}
         ],
         max_tokens=500,
         n=1,
@@ -495,10 +495,8 @@ def main():
             cluster_evaluations[cluster] = evaluations
 
         # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Article Text'
-        df_clustered['Summaries'] = df_clustered['full_text'].apply(lambda x: summarize_article(x, stock))
+        df_clustered['Summaries'] = df_clustered['full_text'].apply(lambda x: summarize_article(x, stock,link))
 
-        # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Article Text'
-        df_clustered['Summaries'] = df_clustered['full_text'].apply(lambda x: summarize_article(x, stock))
 
         #df_clustered.to_csv(csv_file, index=False, encoding='utf-8-sig', quotechar='"', quoting=1)
 
