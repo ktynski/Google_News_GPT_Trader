@@ -282,14 +282,32 @@ def is_valid_json(json_string):
         return False
     return True
 
+
+def is_valid_evaluation_format(evaluations):
+    # Make sure it's a list.
+    if not isinstance(evaluations, list):
+        return False
+    # Check every item in the list.
+    for evaluation in evaluations:
+        # Each item should be a dictionary.
+        if not isinstance(evaluation, dict):
+            return False
+        # The dictionary should contain the expected keys.
+        expected_keys = {"Stock", "Signal Type", "Explanation", "Confidence"}
+        if not expected_keys.issubset(evaluation.keys()):
+            return False
+    return True
+
+
+
 def evaluate_cluster(cluster_articles, cluster, stock):
     summaries = cluster_articles.apply(lambda x: summarize_article(x, stock)).tolist()
     cluster_evaluation = evaluate_cluster_summaries(summaries)
     if cluster_evaluation is None:
         cluster_evaluation = []
 
-    if isinstance(cluster_evaluation, str) and not is_valid_json(cluster_evaluation):
-        print("JSON string is not valid. Attempting to reformat...")
+    if not is_valid_evaluation_format(cluster_evaluation):
+        print("Evaluation format is not valid. Attempting to reformat...")
         cluster_evaluation = reformat_json(cluster_evaluation)
 
     if isinstance(cluster_evaluation, str):
