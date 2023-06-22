@@ -282,28 +282,29 @@ def evaluate_cluster(cluster_articles, cluster, stock):
     cluster_evaluation = evaluate_cluster_summaries(summaries)
     if cluster_evaluation is None:
         cluster_evaluation = []
-    try:
-        evaluations = cluster_evaluation
-    except Exception as e:
-        print(f"Could not assign cluster_evaluation to evaluations: {e}")
-        print("Attempting to reformat JSON string using GPT-3...")
-        try:
-            evaluations = json.loads(cluster_evaluation)
-        except json.JSONDecodeError as e:
-            print(f"Could not parse JSON string: {e}")
-            print("Attempting to reformat JSON string using GPT-3...")
-            cluster_evaluation = reformat_json(cluster_evaluation)
-            try:
-                evaluations = json.loads(cluster_evaluation)
-            except json.JSONDecodeError as e:
-                print(f"Could not parse reformatted string to dictionary: {e}")
-                evaluations = [{}]
 
+    if not is_valid_json(cluster_evaluation):
+        print("JSON string is not valid. Attempting to reformat...")
+        cluster_evaluation = reformat_json(cluster_evaluation)
+        
+    try:
+        evaluations = json.loads(cluster_evaluation)
+    except json.JSONDecodeError as e:
+        print(f"Could not parse JSON string: {e}")
+        evaluations = [{}]
+        
     # Convert numpy.int64 values to regular integers
     evaluations = json.loads(json.dumps(evaluations, default=convert_to_python_int))
 
     return cluster, summaries, evaluations
 
+
+def is_valid_json(json_string):
+    try:
+        json_object = json.loads(json_string)
+    except ValueError as e:
+        return False
+    return True
 
 
 
