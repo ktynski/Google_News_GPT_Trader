@@ -303,7 +303,7 @@ def is_valid_evaluation_format(evaluations):
 def evaluate_cluster(cluster_articles, cluster, stock):
     summaries = cluster_articles.apply(lambda x: summarize_article(x, stock)).tolist()
     cluster_evaluation = evaluate_cluster_summaries(summaries)
-    st.write(cluster_evaluation)
+    print(cluster_evaluation)
     if cluster_evaluation is None:
         cluster_evaluation = []
 
