@@ -191,7 +191,6 @@ def summarize_article(article_text, stock):
     return summary
 
 
-import json
 
 def evaluate_cluster_summaries(cluster_summaries):
     cluster_summaries = [summary for summary in cluster_summaries if summary is not None]
@@ -215,7 +214,7 @@ def evaluate_cluster_summaries(cluster_summaries):
 
               Please reform the following string and return only what the json formatted as described in the example without any intro or outro text:'''},
 
-              {"role": "user", "content": f"""{truncated_cluster_summaries} \n\n Valid Json: \n\n"""}
+              {"role": "user", "content": f"""{truncated_cluster_summaries} \n\n Valid Json: \n"""}
         ],
         max_tokens=500,
         n=1,
@@ -235,6 +234,7 @@ def evaluate_cluster_summaries(cluster_summaries):
     except json.JSONDecodeError:
         print("Failed to parse evaluation as JSON.")
         return None
+
 
 
 
