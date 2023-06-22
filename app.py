@@ -274,30 +274,6 @@ def convert_to_python_int(obj):
         return int(obj)
     raise TypeError
 
-import json
-import numpy as np
-
-def evaluate_cluster(cluster_articles, cluster, stock):
-    summaries = cluster_articles.apply(lambda x: summarize_article(x, stock)).tolist()
-    cluster_evaluation = evaluate_cluster_summaries(summaries)
-    if cluster_evaluation is None:
-        cluster_evaluation = []
-
-    if not is_valid_json(cluster_evaluation):
-        print("JSON string is not valid. Attempting to reformat...")
-        cluster_evaluation = reformat_json(cluster_evaluation)
-        
-    try:
-        evaluations = json.loads(cluster_evaluation)
-    except json.JSONDecodeError as e:
-        print(f"Could not parse JSON string: {e}")
-        evaluations = [{}]
-        
-    # Convert numpy.int64 values to regular integers
-    evaluations = json.loads(json.dumps(evaluations, default=convert_to_python_int))
-
-    return cluster, summaries, evaluations
-
 
 def is_valid_json(json_string):
     try:
@@ -305,6 +281,34 @@ def is_valid_json(json_string):
     except ValueError as e:
         return False
     return True
+
+def evaluate_cluster(cluster_articles, cluster, stock):
+    summaries = cluster_articles.apply(lambda x: summarize_article(x, stock)).tolist()
+    cluster_evaluation = evaluate_cluster_summaries(summaries)
+    if cluster_evaluation is None:
+        cluster_evaluation = []
+
+    if isinstance(cluster_evaluation, str) and not is_valid_json(cluster_evaluation):
+        print("JSON string is not valid. Attempting to reformat...")
+        cluster_evaluation = reformat_json(cluster_evaluation)
+
+    if isinstance(cluster_evaluation, str):
+        try:
+            evaluations = json.loads(cluster_evaluation)
+        except json.JSONDecodeError as e:
+            print(f"Could not parse JSON string: {e}")
+            evaluations = [{}]
+    elif isinstance(cluster_evaluation, list):
+        evaluations = cluster_evaluation
+    else:
+        print("Unexpected data type for cluster_evaluation.")
+        evaluations = [{}]
+        
+    # Convert numpy.int64 values to regular integers
+    evaluations = json.loads(json.dumps(evaluations, default=convert_to_python_int))
+
+    return cluster, summaries, evaluations
+
 
 
 
