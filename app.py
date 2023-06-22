@@ -300,14 +300,10 @@ def evaluate_cluster(cluster_articles, cluster, stock):
                 evaluations = [{}]
 
     # Convert numpy.int64 values to regular integers
-    def convert_to_python_int(obj):
-        if isinstance(obj, np.int64):
-            return obj.item()
-        raise TypeError
-
     evaluations = json.loads(json.dumps(evaluations, default=convert_to_python_int))
 
     return cluster, summaries, evaluations
+
 
 
 
