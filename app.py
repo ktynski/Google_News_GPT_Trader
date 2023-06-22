@@ -194,6 +194,7 @@ def summarize_article(article_text, stock):
 
 def evaluate_cluster_summaries(cluster_summaries):
     cluster_summaries = [summary for summary in cluster_summaries if summary is not None]
+    print(cluster_summaries)
     if not cluster_summaries:
         print("No summaries to evaluate.")
         return None
