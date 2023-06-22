@@ -300,7 +300,8 @@ def evaluate_cluster(cluster_articles, cluster, stock):
             return obj.item()
         raise TypeError
 
-    evaluations = json.loads(json.dumps(evaluations, default=convert_to_python_int))
+    evaluations = json.loads(json.dumps(evaluations, default=convert_to_python_int, ensure_ascii=False))
+
 
     return cluster, summaries, evaluations
 
