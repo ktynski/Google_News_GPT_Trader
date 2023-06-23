@@ -469,10 +469,10 @@ def main():
         df_clustered = perform_clustering(df_deduplicated)
 
         # Specify the file path to save the CSV
-        csv_file = 'clustered_articles.csv'
+        #csv_file = 'clustered_articles.csv'
 
         # Save the DataFrame as CSV with proper handling of special characters using pandas' to_csv method
-        df_clustered.to_csv(csv_file, index=False, encoding='utf-8-sig', quotechar='"', quoting=1)
+        #df_clustered.to_csv(csv_file, index=False, encoding='utf-8-sig', quotechar='"', quoting=1)
 
         # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Article Text'
         clusters = df_clustered['Cluster'].unique()
@@ -493,9 +493,8 @@ def main():
             if None in summaries:
                 summaries = [summary for summary in summaries if summary is not None]
                 print("Some summaries were not obtained.")
-            if evaluations is None:
-                cluster_evaluations = [eval for eval in evaluations if eval is not None]
-                print("Evaluation for this cluster was not obtained.")
+            if evaluations is not None:
+                cluster_evaluations.extend(evaluations)
 
             
 
@@ -517,8 +516,8 @@ def main():
         st.subheader("Clustered Articles")
         st.write(df_clustered)
 
-        #st.subheader("Cluster Evaluations")
-        #st.write(cluster_evaluations)
+        st.subheader("Cluster Evaluations")
+        st.write(cluster_evaluations)
 
         st.subheader("Bullish Signals")
         st.write(bullish_signals)
