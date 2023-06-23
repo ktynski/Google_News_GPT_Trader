@@ -485,7 +485,7 @@ def main():
             futures = {executor.submit(evaluate_cluster, df_clustered[df_clustered['Cluster'] == cluster]['Summaries'], cluster, stock): cluster for cluster in clusters}
 
 
-         
+        cluster_evaluations = []
 
         for future in concurrent.futures.as_completed(futures):
             cluster, summaries, evaluations = future.result()
