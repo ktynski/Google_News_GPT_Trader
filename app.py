@@ -477,13 +477,15 @@ def main():
         # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Article Text'
         clusters = df_clustered['Cluster'].unique()
 
+        # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Article Text'
+        df_clustered['Summaries'] = df_clustered.apply(lambda row: summarize_article(row['full_text'], stock, row['link']), axis=1)
+
         with concurrent.futures.ThreadPoolExecutor() as executor:
             # Submit tasks to the executor for each cluster
             futures = {executor.submit(evaluate_cluster, df_clustered[df_clustered['Cluster'] == cluster]['full_text'], cluster, stock): cluster for cluster in clusters}
 
 
-         # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Article Text'
-        df_clustered['Summaries'] = df_clustered.apply(lambda row: summarize_article(row['full_text'], stock, row['link']), axis=1)
+         
 
         for future in concurrent.futures.as_completed(futures):
             cluster, summaries, evaluations = future.result()
