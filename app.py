@@ -303,8 +303,8 @@ def is_valid_evaluation_format(evaluations):
 
 
 def evaluate_cluster(cluster_articles, cluster, stock):
-    summaries = cluster_articles.apply(lambda x: summarize_article(x, stock)).tolist()
-    cluster_evaluation = evaluate_cluster_summaries(summaries)
+    
+    cluster_evaluation = evaluate_cluster_summaries(cluster_articles)
     print(cluster_evaluation)
     if cluster_evaluation is None:
         cluster_evaluation = []
@@ -482,7 +482,7 @@ def main():
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             # Submit tasks to the executor for each cluster
-            futures = {executor.submit(evaluate_cluster, df_clustered[df_clustered['Cluster'] == cluster]['full_text'], cluster, stock): cluster for cluster in clusters}
+            futures = {executor.submit(evaluate_cluster, df_clustered[df_clustered['Cluster'] == cluster]['Summaries'], cluster, stock): cluster for cluster in clusters}
 
 
          
