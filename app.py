@@ -303,7 +303,7 @@ def is_valid_evaluation_format(evaluations):
 
 
 def evaluate_cluster(cluster_articles, cluster, stock):
-    
+    cluster_articles = cluster_articles
     cluster_evaluation = evaluate_cluster_summaries(cluster_articles)
     print(cluster_evaluation)
     if cluster_evaluation is None:
@@ -328,7 +328,7 @@ def evaluate_cluster(cluster_articles, cluster, stock):
     # Convert numpy.int64 values to regular integers
     evaluations = json.loads(json.dumps(evaluations, default=convert_to_python_int))
 
-    return cluster, summaries, evaluations
+    return cluster, cluster_articles, evaluations
 
 
 
