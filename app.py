@@ -520,6 +520,8 @@ def main():
         #df_clustered = pd.read_csv(csv_file)
 
         bullish_signals, bearish_signals = aggregate_signals(df_clustered, stock, cluster_evaluations)  # Pass cluster_evaluations to function
+        print(f"Bullish Signals {bullish_signals}")
+        print(f"Bearish Signals {bearish_signals}")
 
         bullish_report, bearish_report = generate_reports(bullish_signals, bearish_signals, stock)
 
