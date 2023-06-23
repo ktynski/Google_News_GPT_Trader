@@ -494,9 +494,10 @@ def main():
                 summaries = [summary for summary in summaries if summary is not None]
                 print("Some summaries were not obtained.")
             if evaluations is None:
+                cluster_evaluations = [eval for eval in evaluations if eval is not None]
                 print("Evaluation for this cluster was not obtained.")
 
-            cluster_evaluations[cluster] = evaluations
+            
 
        
 
