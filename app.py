@@ -363,11 +363,19 @@ def generate_stock_name_variations(stock_name):
     return stock_name_variations
 
 
-def aggregate_signals(df, stock_name):
+def aggregate_signals(df, stock_name, cluster_evaluations):
     stock_name_variations = generate_stock_name_variations(stock_name)
     bullish_signals = []
     bearish_signals = []
 
+    for eval in cluster_evaluations:
+        if eval['Stock'] in stock_name_variations and (eval['Confidence'] is None or eval['Confidence'] > 40):
+            if eval['Signal Type'] == 'Bullish':
+                bullish_signals.append(eval['Explanation'])
+            elif eval['Signal Type'] == 'Bearish':
+                bearish_signals.append(eval['Explanation'])
+
+    # existing logic of your function continues here...
     for i in range(1, 3):
         stock_column = f'Signal {i} Stock'
         type_column = f'Signal {i} Type'
@@ -387,6 +395,7 @@ def aggregate_signals(df, stock_name):
     bearish_signals_str = " ".join(bearish_signals)
 
     return bullish_signals_str, bearish_signals_str
+
 
 
 def generate_reports(bullish_signals, bearish_signals, stock_name):
@@ -486,15 +495,19 @@ def main():
 
 
         cluster_evaluations = []
-
+    
         for future in concurrent.futures.as_completed(futures):
             cluster, summaries, evaluations = future.result()
-
+    
             if None in summaries:
                 summaries = [summary for summary in summaries if summary is not None]
                 print("Some summaries were not obtained.")
-            if evaluations is not None:
-                cluster_evaluations.extend(evaluations)
+            if evaluations is None:
+                cluster_evaluations = [eval for eval in evaluations if eval is not None]
+                print("Evaluation for this cluster was not obtained.")
+            else:
+                cluster_evaluations.extend(evaluations)  # Append evaluations to list
+    
 
             
 
@@ -506,7 +519,7 @@ def main():
         # Assuming 'df_clustered' is your DataFrame with the columns 'Cluster' and 'Summaries'
         #df_clustered = pd.read_csv(csv_file)
 
-        bullish_signals, bearish_signals = aggregate_signals(df_clustered, stock)
+        bullish_signals, bearish_signals = aggregate_signals(df_clustered, stock, cluster_evaluations)  # Pass cluster_evaluations to function
 
         bullish_report, bearish_report = generate_reports(bullish_signals, bearish_signals, stock)
 
